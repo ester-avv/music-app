@@ -42,6 +42,7 @@ export default class Login extends Component {
                   type="text"
                   value={ nameLogin }
                   name="nameLogin"
+                  id="nameLogin"
                   onChange={ this.handleChange }
                   data-testid="login-name-input"
                 />

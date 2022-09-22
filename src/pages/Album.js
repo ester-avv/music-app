@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import Header from '../components/Header';
 /* import BrowserRouter from 'react-router-dom'; */
 
 export default class Album extends Component {
@@ -7,9 +8,13 @@ export default class Album extends Component {
     const { id } = this.props;
     return (
       <div data-testid="page-album">
-        {' Album '}
-        {id}
-        {' '}
+        <Header />
+        <h1>
+          Album
+          {' '}
+          { id }
+          {' '}
+        </h1>
       </div>
     );
   }

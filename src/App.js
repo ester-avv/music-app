@@ -12,7 +12,6 @@ class App extends React.Component {
   render() {
     return (
       <BrowserRouter>
-        <h1>Trybetunes</h1>
         <Switch>
           <Route path="/search" component={ Search } />
 

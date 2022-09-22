@@ -31,6 +31,7 @@ export default class Login extends Component {
 
     return (
       <div data-testid="page-login">
+        <h1> Trybetunes </h1>
         { isLoading
           ? <Loading />
           : (

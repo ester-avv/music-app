@@ -6,24 +6,23 @@ import Loading from './Loading';
 
 export default class MusicCard extends Component {
   state = {
-    mySongs: [],
-    isLoading: false,
+    isLoading: true,
     favorites: [],
   };
 
   async componentDidMount() {
-    this.setState({ isLoading: true });
     const myFavorites = await getFavoriteSongs();
-    this.fixState();
+    /* const { songs } = this.props; */
     this.setState({
       favorites: myFavorites,
-      isLoading: false });
+      isLoading: false,
+    });
   }
 
-  fixState = () => {
+  /*   fixState = () => {
     const { songs } = this.props;
     this.setState({ mySongs: songs });
-  };
+  }; */
 
   updateFavorites = async () => {
     const myFavorites = await getFavoriteSongs();
@@ -66,8 +65,9 @@ export default class MusicCard extends Component {
   }; */
 
   render() {
-    const { mySongs, isLoading, favorites } = this.state;
-    console.log('favorites', favorites);
+    const { isLoading, favorites } = this.state;
+    const { songs } = this.props;
+    /* console.log('favorites', favorites); */
 
     return (
       <div>
@@ -75,7 +75,7 @@ export default class MusicCard extends Component {
           ? <Loading />
           : (
             <div>
-              { mySongs.map((musica) => (
+              { songs.map((musica) => (
                 <div key={ musica.trackId }>
                   <h3>
                     {' '}
@@ -121,36 +121,6 @@ export default class MusicCard extends Component {
 
 MusicCard.propTypes = {
   songs: PropTypes.shape({
-    artistId: PropTypes.string,
-    artistName: PropTypes.string,
-    artistViewUrl: PropTypes.string,
-    artworkUrl30: PropTypes.string,
-    artworkUrl60: PropTypes.string,
-    artworkUrl100: PropTypes.string,
-    collectionCensoredName: PropTypes.string,
-    collectionExplicitness: PropTypes.string,
-    collectionId: PropTypes.number,
-    collectionName: PropTypes.string,
-    collectionPrice: PropTypes.number,
-    collectionViewUrl: PropTypes.string,
-    country: PropTypes.string,
-    currency: PropTypes.string,
-    discCount: PropTypes.number,
-    discNumber: PropTypes.number,
-    isStreamable: PropTypes.bool,
-    kind: PropTypes.string,
-    previewUrl: PropTypes.string,
-    primaryGenreName: PropTypes.string,
-    releaseDate: PropTypes.string,
-    trackCensoredName: PropTypes.string,
-    trackCount: PropTypes.number,
-    trackExplicitness: PropTypes.string,
-    trackId: PropTypes.number,
-    trackName: PropTypes.string,
-    trackNumber: PropTypes.number,
-    trackPrice: PropTypes.number,
-    trackTimeMillis: PropTypes.number,
-    trackViewUrl: PropTypes.string,
-    wrapperType: PropTypes.string,
-  }).isRequired,
-};
+    map: PropTypes.func,
+  }),
+}.isRequired;

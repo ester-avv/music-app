@@ -1,37 +1,42 @@
 import React, { Component } from 'react';
 import Header from '../components/Header';
-/* import MusicCard from '../components/MusicCard';
+import MusicCard from '../components/MusicCard';
 import { getFavoriteSongs } from '../services/favoriteSongsAPI';
-import Loading from '../components/Loading'; */
+/* import Loading from '../components/Loading'; */
 
 export default class Favorites extends Component {
-/*   state = {
-    favorites: [],
+  state = {
     songs: [],
-  }; */
+  };
 
-  /*   async componentDidMount() {
+  async componentDidMount() {
     const myFavorites = await getFavoriteSongs();
-    this.setState({ favorites: myFavorites,
-      songs: myFavorites });
-  } */
+    this.setState({ songs: myFavorites });
+  }
+
+  async shouldComponentUpdate(nextProp, nextState) {
+    const myFavorites = await getFavoriteSongs();
+    return myFavorites !== nextState.songs;
+  }
+
+  async componentDidUpdate() {
+    const myFavorites = await getFavoriteSongs();
+    this.setState({ songs: myFavorites });
+  }
 
   render() {
-    /*     const { favorites, songs } = this.state; */
+    const { songs } = this.state;
     return (
       <div data-testid="page-favorites">
         <Header />
-        {/*         <div>
-          {favorites
-            ? (
-              <section>
-                <h1>Músicas Favoritas</h1>
-                <MusicCard
-                  songs={ songs }
-                />
-              </section>)
-            : <Loading />}
-        </div> */}
+
+        <section>
+          <h1>Músicas Favoritas</h1>
+          <MusicCard
+            songs={ songs }
+          />
+        </section>
+
       </div>
     );
   }

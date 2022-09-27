@@ -1,15 +1,15 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { addSong, getFavoriteSongs } from '../services/favoriteSongsAPI';
-/* import getMusics from '../services/musicsAPI'; */
+import { addSong, getFavoriteSongs, removeSong } from '../services/favoriteSongsAPI';
+import getMusics from '../services/musicsAPI';
 import Loading from './Loading';
 
 export default class MusicCard extends Component {
   state = {
     mySongs: [],
     isLoading: false,
-    isChecked: false,
     favorites: [],
+    savedFavorites: [],
   };
 
   async componentDidMount() {
@@ -17,7 +17,7 @@ export default class MusicCard extends Component {
     const myFavorites = await getFavoriteSongs();
     this.fixState();
     this.setState({
-      favorites: [...myFavorites],
+      savedFavorites: [...myFavorites],
       isLoading: false });
   }
 
@@ -27,15 +27,40 @@ export default class MusicCard extends Component {
   };
 
   handleChange = async ({ target }) => {
-    const { mySongs } = this.state;
+    const { id, checked } = target;
+    /* console.log(id); */
+    this.setState({ isLoading: true });
+    const songsWithId = await getMusics(id);
+
+    if (checked) {
+      await addSong(songsWithId[0]);
+      this.setState((lastState) => ({
+        isLoading: false,
+        favorites: [...lastState.favorites, id],
+      }));
+    } else {
+      await removeSong(songsWithId[0]);
+      this.setState((lastState) => ({
+        isLoading: false,
+        favorites: lastState.favorites.filter((e) => e !== id),
+        savedFavorites: lastState.savedFavorites.filter((e) => Number(id) === e.trackId),
+      }));
+    }
+  };
+
+  handleClick = ({ target }) => {
+    const { savedFavorites, favorites } = this.state;
     const { id } = target;
-    console.log(id);
-    const favoriteSongs = mySongs.filter((e) => Number(id) === e.trackId);
-    this.setState({ favorites: [...favorites, ...favoriteSongs] });
+    if (savedFavorites[0]) {
+      savedFavorites.some((e) => Number(e.trackId) === Number(id));
+    } else {
+      favorites.includes(id);
+    }
+    console.log('saved', savedFavorites);
   };
 
   render() {
-    const { mySongs, isLoading, isChecked } = this.state;
+    const { mySongs, isLoading } = this.state;
 
     return (
       <div>
@@ -62,7 +87,6 @@ export default class MusicCard extends Component {
                   {' '}
                   <code>audio</code>
                   <br />
-
                   <label
                     data-testid={ `checkbox-music-${e.trackId}` }
                     htmlFor={ e.trackId }
@@ -72,9 +96,10 @@ export default class MusicCard extends Component {
                       type="checkbox"
                       id={ e.trackId }
                       onChange={ this.handleChange }
-                      checked={ isChecked }
+                      onClick={ this.handleClick }
                     />
                   </label>
+
                 </div>
               ))}
             </div>

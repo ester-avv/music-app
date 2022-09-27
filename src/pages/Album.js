@@ -18,8 +18,8 @@ export default class Album extends Component {
     this.getCollectionId();
     const myAlbumSongs = await this.getAlbumSongs();
     const mySongs = await myAlbumSongs.filter((_element, index) => index > 0);
-    console.log('tudo', myAlbumSongs);
-    console.log('só as musicas', mySongs);
+    /*  console.log('tudo', myAlbumSongs);
+    console.log('só as musicas', mySongs); */
     /* const allSongs = await myAlbumSongs; */
     this.setState({ songs: mySongs, myAlbum: myAlbumSongs[0], isLoading: false });
   }

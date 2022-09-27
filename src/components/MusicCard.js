@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { addSong, getFavoriteSongs, removeSong } from '../services/favoriteSongsAPI';
+import { addSong, getFavoriteSongs } from '../services/favoriteSongsAPI';
 import getMusics from '../services/musicsAPI';
 import Loading from './Loading';
 
@@ -10,6 +10,7 @@ export default class MusicCard extends Component {
     isLoading: false,
     favorites: [],
     savedFavorites: [],
+    isChecked: false,
   };
 
   async componentDidMount() {
@@ -17,7 +18,7 @@ export default class MusicCard extends Component {
     const myFavorites = await getFavoriteSongs();
     this.fixState();
     this.setState({
-      savedFavorites: [...myFavorites],
+      favorites: myFavorites,
       isLoading: false });
   }
 
@@ -26,41 +27,26 @@ export default class MusicCard extends Component {
     this.setState({ mySongs: songs });
   };
 
-  handleChange = async ({ target }) => {
-    const { id, checked } = target;
-    /* console.log(id); */
-    this.setState({ isLoading: true });
-    const songsWithId = await getMusics(id);
-
-    if (checked) {
-      await addSong(songsWithId[0]);
-      this.setState((lastState) => ({
-        isLoading: false,
-        favorites: [...lastState.favorites, id],
-      }));
-    } else {
-      await removeSong(songsWithId[0]);
-      this.setState((lastState) => ({
-        isLoading: false,
-        favorites: lastState.favorites.filter((e) => e !== id),
-        savedFavorites: lastState.savedFavorites.filter((e) => Number(id) === e.trackId),
-      }));
-    }
+  updateFavorites = async () => {
+    const myFavorites = await getFavoriteSongs();
+    this.setState({ favorites: myFavorites });
   };
 
-  handleClick = ({ target }) => {
-    const { savedFavorites, favorites } = this.state;
-    const { id } = target;
-    if (savedFavorites[0]) {
-      savedFavorites.some((e) => Number(e.trackId) === Number(id));
-    } else {
-      favorites.includes(id);
-    }
-    console.log('saved', savedFavorites);
+  handleChange = async (e) => {
+    console.log(e);
+    this.setState({ isLoading: true });
+
+    await addSong(e);
+
+    await this.updateFavorites();
+    this.setState({
+      isLoading: false,
+    });
   };
 
   render() {
-    const { mySongs, isLoading } = this.state;
+    const { mySongs, isLoading, isChecked, favorites } = this.state;
+    console.log('favorites', favorites);
 
     return (
       <div>
@@ -68,11 +54,11 @@ export default class MusicCard extends Component {
           ? <Loading />
           : (
             <div>
-              { mySongs.map((e) => (
-                <div key={ e.trackId }>
+              { mySongs.map((musica) => (
+                <div key={ musica.trackId }>
                   <h3>
                     {' '}
-                    {e.trackName}
+                    {musica.trackName}
                   </h3>
                   <audio data-testid="audio-component" src="{e.previewUrl}" controls>
                     <track kind="captions" />
@@ -87,16 +73,18 @@ export default class MusicCard extends Component {
                   {' '}
                   <code>audio</code>
                   <br />
+
                   <label
-                    data-testid={ `checkbox-music-${e.trackId}` }
-                    htmlFor={ e.trackId }
+                    htmlFor={ musica.trackId }
                   >
                     Favorita
                     <input
+                      data-testid={ `checkbox-music-${musica.trackId}` }
                       type="checkbox"
-                      id={ e.trackId }
-                      onChange={ this.handleChange }
-                      onClick={ this.handleClick }
+                      id={ musica.trackId }
+                      onChange={ () => this.handleChange(musica) }
+                      checked={ favorites
+                        .some((song) => musica.trackId === song.trackId) }
                     />
                   </label>
 

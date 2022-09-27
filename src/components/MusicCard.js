@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { addSong, getFavoriteSongs } from '../services/favoriteSongsAPI';
+import { addSong, getFavoriteSongs, removeSong } from '../services/favoriteSongsAPI';
 /* import getMusics from '../services/musicsAPI'; */
 import Loading from './Loading';
 
@@ -31,16 +31,39 @@ export default class MusicCard extends Component {
   };
 
   handleChange = async (e) => {
-    console.log(e);
+    /* console.log('quem é', e); */
     this.setState({ isLoading: true });
+
+    const { favorites } = this.state;
+
+    const existe = favorites.some((el) => el.trackId === e.trackId);
+
+    if (existe) {
+      await removeSong(e);
+      await this.updateFavorites();
+      this.setState({
+        isLoading: false,
+      });
+    } else {
+      await addSong(e);
+      await this.updateFavorites();
+      this.setState({
+        isLoading: false,
+      });
+    }
+  };
+
+  /* change = async (e) => {
+    /* console.log('quem é', e); */
+  /* this.setState({ isLoading: true });
 
     await addSong(e);
 
     await this.updateFavorites();
     this.setState({
-      isLoading: false,
-    });
-  };
+      isLoading: false, */
+  /* });
+  }; */
 
   render() {
     const { mySongs, isLoading, favorites } = this.state;

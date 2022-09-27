@@ -1,13 +1,24 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { addSong, getFavoriteSongs } from '../services/favoriteSongsAPI';
+/* import getMusics from '../services/musicsAPI'; */
+import Loading from './Loading';
 
 export default class MusicCard extends Component {
   state = {
     mySongs: [],
+    isLoading: false,
+    isChecked: false,
+    favorites: [],
   };
 
-  componentDidMount() {
+  async componentDidMount() {
+    this.setState({ isLoading: true });
+    const myFavorites = await getFavoriteSongs();
     this.fixState();
+    this.setState({
+      favorites: [...myFavorites],
+      isLoading: false });
   }
 
   fixState = () => {
@@ -15,30 +26,60 @@ export default class MusicCard extends Component {
     this.setState({ mySongs: songs });
   };
 
-  render() {
+  handleChange = async ({ target }) => {
     const { mySongs } = this.state;
+    const { id } = target;
+    console.log(id);
+    const favoriteSongs = mySongs.filter((e) => Number(id) === e.trackId);
+    this.setState({ favorites: [...favorites, ...favoriteSongs] });
+  };
+
+  render() {
+    const { mySongs, isLoading, isChecked } = this.state;
+
     return (
       <div>
-        { mySongs.map((e) => (
-          <div key={ e.trackId }>
-            <h3>
-              {' '}
-              {e.trackName}
-            </h3>
-            <audio data-testid="audio-component" src="{e.previewUrl}" controls>
-              <track kind="captions" />
-              O seu navegador não suporta o elemento
-              {' '}
-              <code>audio</code>
-              .
-            </audio>
-            <track kind="captions" />
-            O seu navegador não suporta o elemento
-            {' '}
-            {' '}
-            <code>audio</code>
-          </div>
-        ))}
+        {isLoading
+          ? <Loading />
+          : (
+            <div>
+              { mySongs.map((e) => (
+                <div key={ e.trackId }>
+                  <h3>
+                    {' '}
+                    {e.trackName}
+                  </h3>
+                  <audio data-testid="audio-component" src="{e.previewUrl}" controls>
+                    <track kind="captions" />
+                    O seu navegador não suporta o elemento
+                    {' '}
+                    <code>audio</code>
+                    .
+                  </audio>
+                  <track kind="captions" />
+                  O seu navegador não suporta o elemento
+                  {' '}
+                  {' '}
+                  <code>audio</code>
+                  <br />
+
+                  <label
+                    data-testid={ `checkbox-music-${e.trackId}` }
+                    htmlFor={ e.trackId }
+                  >
+                    Favorita
+                    <input
+                      type="checkbox"
+                      id={ e.trackId }
+                      onChange={ this.handleChange }
+                      checked={ isChecked }
+                    />
+                  </label>
+                </div>
+              ))}
+            </div>
+          )}
+
       </div>
     );
   }

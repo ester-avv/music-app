@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { addSong, getFavoriteSongs } from '../services/favoriteSongsAPI';
-import getMusics from '../services/musicsAPI';
+/* import getMusics from '../services/musicsAPI'; */
 import Loading from './Loading';
 
 export default class MusicCard extends Component {
@@ -9,8 +9,6 @@ export default class MusicCard extends Component {
     mySongs: [],
     isLoading: false,
     favorites: [],
-    savedFavorites: [],
-    isChecked: false,
   };
 
   async componentDidMount() {
@@ -45,7 +43,7 @@ export default class MusicCard extends Component {
   };
 
   render() {
-    const { mySongs, isLoading, isChecked, favorites } = this.state;
+    const { mySongs, isLoading, favorites } = this.state;
     console.log('favorites', favorites);
 
     return (

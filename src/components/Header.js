@@ -35,7 +35,7 @@ export default class Header extends Component {
           ? <Loading />
           : (
             <p data-testid="header-user-name">
-              {`Ola, ${user}!`}
+              {user}
             </p>
           )}
         <h1>Trybetunes!</h1>

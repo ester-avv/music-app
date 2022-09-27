@@ -1,27 +1,27 @@
 import React, { Component } from 'react';
 import Header from '../components/Header';
-import MusicCard from '../components/MusicCard';
+/* import MusicCard from '../components/MusicCard';
 import { getFavoriteSongs } from '../services/favoriteSongsAPI';
-import Loading from '../components/Loading';
+import Loading from '../components/Loading'; */
 
 export default class Favorites extends Component {
-  state = {
+/*   state = {
     favorites: [],
     songs: [],
-  };
+  }; */
 
-  async componentDidMount() {
+  /*   async componentDidMount() {
     const myFavorites = await getFavoriteSongs();
     this.setState({ favorites: myFavorites,
       songs: myFavorites });
-  }
+  } */
 
   render() {
-    const { favorites, songs } = this.state;
+    /*     const { favorites, songs } = this.state; */
     return (
       <div data-testid="page-favorites">
         <Header />
-        <div>
+        {/*         <div>
           {favorites
             ? (
               <section>
@@ -31,7 +31,7 @@ export default class Favorites extends Component {
                 />
               </section>)
             : <Loading />}
-        </div>
+        </div> */}
       </div>
     );
   }
